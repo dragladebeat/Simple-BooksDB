@@ -38,6 +38,9 @@ class BookController extends Controller
 
     public function store(Request $request)
     {
+        if (auth()->user()->type != 'admin') {
+            throw new UnauthorizedHttpException('Unauthorized');
+        }
         Log::info(json_encode($request->all()));
         $validator = Validator::make(
             $request->all(),
@@ -79,6 +82,9 @@ class BookController extends Controller
 
     public function update($id, Request $request)
     {
+        if (auth()->user()->type != 'admin') {
+            throw new UnauthorizedHttpException('Unauthorized');
+        }
         $validator = Validator::make(
             $request->all(),
             [
@@ -118,6 +124,9 @@ class BookController extends Controller
 
     public function delete($id)
     {
+        if (auth()->user()->type != 'admin') {
+            throw new UnauthorizedHttpException('Unauthorized');
+        }
         $book = Book::findOrFail($id);
         $book->delete();
 

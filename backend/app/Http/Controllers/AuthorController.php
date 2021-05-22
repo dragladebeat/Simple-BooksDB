@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class AuthorController extends Controller
 {
@@ -24,6 +25,9 @@ class AuthorController extends Controller
 
     public function store(Request $request)
     {
+        if (auth()->user()->type != 'admin') {
+            throw new UnauthorizedHttpException('Unauthorized');
+        }
         $validator = Validator::make(
             $request->all(),
             [
@@ -45,6 +49,9 @@ class AuthorController extends Controller
 
     public function update($id, Request $request)
     {
+        if (auth()->user()->type != 'admin') {
+            throw new UnauthorizedHttpException('Unauthorized');
+        }
         $validator = Validator::make(
             $request->all(),
             [
@@ -67,6 +74,9 @@ class AuthorController extends Controller
 
     public function delete($id)
     {
+        if (auth()->user()->type != 'admin') {
+            throw new UnauthorizedHttpException('Unauthorized');
+        }
         $author = Author::with('books')->findOrFail($id);
 
         DB::transaction(function () use ($author) {
