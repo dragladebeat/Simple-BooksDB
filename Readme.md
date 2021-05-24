@@ -9,9 +9,9 @@ Frontend :
 2. Admin LTE : https://github.com/ColorlibHQ/AdminLTE/releases
 
 Android :
-1. Retrofit : https://github.com/square/retrofit
-2. implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-3. implementation 'com.github.ivbaranov:materialfavoritebutton:0.1.5'
+1. Retrofit : implementation 'com.squareup.retrofit2:retrofit:(insert latest version)'
+2. Retrofit GSON Adapter implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+3. Favourite Button : implementation 'com.github.ivbaranov:materialfavoritebutton:0.1.5'
 
 1. Instalasi Lumen : composer create-project --prefer-dist laravel/lumen backend
 2. Lumen-Generator : https://github.com/flipboxstudio/lumen-generator
