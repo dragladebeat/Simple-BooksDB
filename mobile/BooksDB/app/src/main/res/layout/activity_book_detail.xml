@@ -114,14 +114,14 @@
 
         <com.varunest.sparkbutton.SparkButton
             android:id="@+id/spark_button"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:sparkbutton_activeImage="@drawable/ic_star_filled"
-            app:sparkbutton_iconSize="48dp"
+            app:sparkbutton_iconSize="36dp"
             app:sparkbutton_inActiveImage="@drawable/ic_star_outline"
             app:sparkbutton_primaryColor="@color/spark_primary_color"
             app:sparkbutton_secondaryColor="@color/spark_secondary_color" />
