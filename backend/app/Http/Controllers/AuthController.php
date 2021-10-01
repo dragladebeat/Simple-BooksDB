@@ -2,23 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\AuthHelper;
 use App\Helpers\Helper;
 use App\Models\Author;
 use App\Models\Encryption;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
+use Firebase\JWT\ExpiredException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Tymon\JWTAuth\Exceptions\TokenBlacklistedException;
-use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 
 class AuthController extends Controller
 {
 
+    private $authHelper;
+    public function __construct(AuthHelper $authHelper)
+    {
+        $this->authHelper = $authHelper;
+    }
     public function login(Request $request)
     {
         Log::info(json_encode($request->all()));
@@ -34,9 +40,10 @@ class AuthController extends Controller
             throw new BadRequestHttpException($validator->errors()->first());
         }
 
-        $credentials = request(['email', 'password']);
 
-        if (!$token = auth()->attempt($credentials)) {
+        $token = $this->authHelper->login($request->email, $request->password);
+
+        if (empty($token)) {
             return Helper::respondWithError(401, 'Unauthorized');
         }
 
@@ -48,12 +55,9 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function logout()
+    public function logout(Request $request)
     {
-        try {
-            auth()->logout();
-        } catch (TokenExpiredException $ignore) {
-        }
+        $this->authHelper->logout($request->bearerToken());
 
         return response()->json(['message' => 'Successfully logged out']);
     }
@@ -108,11 +112,12 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function refresh()
+    public function refresh(Request $request)
     {
         try {
-            return $this->respondWithToken(auth()->refresh());
-        } catch (TokenBlacklistedException $e) {
+            $token = $this->authHelper->refresh($request->bearerToken());
+            return $this->respondWithToken($token);
+        } catch (ExpiredException $e) {
             return Helper::respondWithError('401', $e->getMessage());
         }
     }
@@ -127,12 +132,14 @@ class AuthController extends Controller
      */
     protected function respondWithToken($token)
     {
+        $decoded = $this->authHelper->decode($token);
+        $user = $this->authHelper->getUser($token);
         return response()->json([
-            'user' => auth()->user(),
+            'user' => $user,
             'auth' => [
                 'access_token' => $token,
                 'token_type' => 'bearer',
-                'expires_in' => auth()->factory()->getTTL() * 60,
+                'expires_at' => new Carbon($decoded->exp),
             ]
         ]);
     }

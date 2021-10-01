@@ -17,30 +17,33 @@ class BookController extends Controller
 {
     public function index(Request $request)
     {
+        $user = $request->_user;
         $query = Book::with('author');
 
         $data = $query->get();
         foreach ($data as $book) {
-            if (!empty(auth()->user())) {
-                $book['is_favourite'] = !empty($book->userFavourite(auth()->user()));
+            if ($user) {
+                $book['is_favourite'] = !empty($book->userFavourite($user));
             }
         }
         return $data;
     }
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
+        $user = $request->_user;
         $book = Book::with('author')->findOrFail($id);
-        if (!empty(auth()->user())) {
-            $book['is_favourite'] = !empty($book->userFavourite(auth()->user()));
+        if ($user) {
+            $book['is_favourite'] = !empty($book->userFavourite($user));
         }
         return $book;
     }
 
     public function store(Request $request)
     {
-        if (auth()->user()->type != 'admin') {
-            throw new UnauthorizedHttpException('Unauthorized');
+        $user = $request->_user;
+        if ($user->type != 'admin') {
+            throw new UnauthorizedHttpException('', 'Unauthorized');
         }
         Log::info(json_encode($request->all()));
         $validator = Validator::make(
@@ -83,7 +86,8 @@ class BookController extends Controller
 
     public function update($id, Request $request)
     {
-        if (auth()->user()->type != 'admin') {
+        $user = $request->_user;
+        if ($user->type != 'admin') {
             throw new UnauthorizedHttpException('Unauthorized');
         }
         $validator = Validator::make(
@@ -123,9 +127,10 @@ class BookController extends Controller
         return response()->json($book);
     }
 
-    public function delete($id)
+    public function delete(Request $request, $id)
     {
-        if (auth()->user()->type != 'admin') {
+        $user = $request->_user;
+        if ($user->type != 'admin') {
             throw new UnauthorizedHttpException('Unauthorized');
         }
         $book = Book::findOrFail($id);

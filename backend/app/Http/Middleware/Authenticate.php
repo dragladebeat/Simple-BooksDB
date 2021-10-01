@@ -2,30 +2,15 @@
 
 namespace App\Http\Middleware;
 
+use App\Helpers\AuthHelper;
 use App\Helpers\Helper;
+use App\Models\User;
 use Closure;
+use Firebase\JWT\ExpiredException;
 use Illuminate\Contracts\Auth\Factory as Auth;
 
 class Authenticate
 {
-    /**
-     * The authentication guard factory instance.
-     *
-     * @var \Illuminate\Contracts\Auth\Factory
-     */
-    protected $auth;
-
-    /**
-     * Create a new middleware instance.
-     *
-     * @param  \Illuminate\Contracts\Auth\Factory  $auth
-     * @return void
-     */
-    public function __construct(Auth $auth)
-    {
-        $this->auth = $auth;
-    }
-
     /**
      * Handle an incoming request.
      *
@@ -36,7 +21,24 @@ class Authenticate
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        if ($this->auth->guard($guard)->guest()) {
+        $token = $request->bearerToken();
+
+        $authHelper = new AuthHelper();
+        try {
+            $decoded = $authHelper->decode($token);
+
+            if (empty($decoded)) {
+                return Helper::respondWithError(401, 'Unauthorized');
+            }
+
+            $user = User::where('id', $decoded->data->id ?? null)->first();
+            if (empty($user)) {
+                return Helper::respondWithError(401, 'Unauthorized');
+            }
+
+            $request->_user = $user;
+            return $next($request);
+        } catch (ExpiredException $e) {
             return Helper::respondWithError(401, 'Unauthorized');
         }
         return $next($request);

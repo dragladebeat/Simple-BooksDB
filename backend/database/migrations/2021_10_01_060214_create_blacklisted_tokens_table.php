@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBooksTable extends Migration
+class CreateBlacklistedTokensTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,11 @@ class CreateBooksTable extends Migration
      */
     public function up()
     {
-        Schema::create('books', function (Blueprint $table) {
+        Schema::create('blacklisted_tokens', function (Blueprint $table) {
             $table->engine = 'InnoDB';
 
             $table->id();
-            $table->string('title');
-            $table->text('summary')->nullable();
-            $table->string('cover')->nullable();
-            $table->foreignId('author_id')->nullable()->constrained();
+            $table->string('token', 255);
             $table->timestamps();
         });
     }
@@ -32,6 +29,6 @@ class CreateBooksTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('books');
+        Schema::dropIfExists('blacklisted_tokens');
     }
 }

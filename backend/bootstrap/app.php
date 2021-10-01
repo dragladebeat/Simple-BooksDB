@@ -99,8 +99,7 @@ $app->register(Intervention\Image\ImageServiceProvider::class);
 class_alias('Intervention\Image\Facades\Image', 'Image');
 
 // JWT
-$app->register(App\Providers\AuthServiceProvider::class);
-$app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
+// $app->register(App\Providers\AuthServiceProvider::class);
 
 // $app->register(App\Providers\EventServiceProvider::class);
 

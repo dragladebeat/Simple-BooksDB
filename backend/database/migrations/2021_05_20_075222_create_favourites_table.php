@@ -14,6 +14,8 @@ class CreateFavouritesTable extends Migration
     public function up()
     {
         Schema::create('favourites', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
+
             $table->id();
             $table->foreignId('book_id')->constrained();
             $table->foreignId('user_id')->constrained();

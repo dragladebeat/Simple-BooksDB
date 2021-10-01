@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\AuthHelper;
 use App\Helpers\Helper;
 use App\Models\Author;
 use Exception;
@@ -25,7 +26,8 @@ class AuthorController extends Controller
 
     public function store(Request $request)
     {
-        if (auth()->user()->type != 'admin') {
+        $user = $request->_user;
+        if ($user->type != 'admin') {
             throw new UnauthorizedHttpException('Unauthorized');
         }
         $validator = Validator::make(
@@ -49,7 +51,8 @@ class AuthorController extends Controller
 
     public function update($id, Request $request)
     {
-        if (auth()->user()->type != 'admin') {
+        $user = $request->_user;
+        if ($user->type != 'admin') {
             throw new UnauthorizedHttpException('Unauthorized');
         }
         $validator = Validator::make(
@@ -74,7 +77,8 @@ class AuthorController extends Controller
 
     public function delete($id)
     {
-        if (auth()->user()->type != 'admin') {
+        $user = $request->_user;
+        if ($user->type != 'admin') {
             throw new UnauthorizedHttpException('Unauthorized');
         }
         $author = Author::with('books')->findOrFail($id);
