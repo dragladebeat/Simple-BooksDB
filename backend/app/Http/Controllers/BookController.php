@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\AuthHelper;
 use App\Helpers\Helper;
 use App\Models\Author;
 use App\Models\Book;
@@ -15,14 +16,20 @@ use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class BookController extends Controller
 {
+    private $authHelper;
+    function __construct(AuthHelper $authHelper)
+    {
+        $this->authHelper = $authHelper;
+    }
     public function index(Request $request)
     {
-        $user = $request->_user;
+        if (!empty($request->bearerToken())) {
+            $user = $this->authHelper->getUser($request->bearerToken());
+        }
         $query = Book::with('author');
-
         $data = $query->get();
         foreach ($data as $book) {
-            if ($user) {
+            if (!empty($user)) {
                 $book['is_favourite'] = !empty($book->userFavourite($user));
             }
         }
@@ -31,9 +38,11 @@ class BookController extends Controller
 
     public function show(Request $request, $id)
     {
-        $user = $request->_user;
+        if (!empty($request->bearerToken())) {
+            $user = $this->authHelper->getUser($request->bearerToken());
+        }
         $book = Book::with('author')->findOrFail($id);
-        if ($user) {
+        if (!empty($user)) {
             $book['is_favourite'] = !empty($book->userFavourite($user));
         }
         return $book;

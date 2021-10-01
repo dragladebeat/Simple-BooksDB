@@ -14,19 +14,21 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class FavouriteController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $data = Book::with('author')->join('favourites', 'books.id', '=', 'book_id')->where('user_id', auth()->user()->id)->select('books.*')->get();
+        $user = $request->_user;
+        $data = Book::with('author')->join('favourites', 'books.id', '=', 'book_id')->where('user_id', $user->id)->select('books.*')->get();
 
-        foreach($data as $book) {
-            $book['is_favourite'] = !empty($book->userFavourite(auth()->user()));   
+        foreach ($data as $book) {
+            $book['is_favourite'] = !empty($book->userFavourite($user));
         }
         return $data;
     }
 
-    public function favourite($id)
+    public function favourite(Request $request, $id)
     {
-        $user_id = auth()->user();
+        $user = $request->_user;
+        $user_id = $user;
         $book = Book::findOrFail($id);
         try {
             if (empty($book->userFavourite($user_id))) {
