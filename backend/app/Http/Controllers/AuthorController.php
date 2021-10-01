@@ -75,7 +75,7 @@ class AuthorController extends Controller
         return response()->json($author);
     }
 
-    public function delete($id)
+    public function delete(Request $request, $id)
     {
         $user = $request->_user;
         if ($user->type != 'admin') {

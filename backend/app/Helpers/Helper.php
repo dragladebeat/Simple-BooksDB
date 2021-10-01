@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use Exception;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use Intervention\Image\Facades\Image;
 
@@ -29,7 +30,7 @@ class Helper
             mkdir($upload_path . $directory, 0777, true);
         }
         $image->save($file_path);
-
-        return env('APP_URL') . $upload_path . $directory . '/' . $file_name;
+        Log::debug(env('APP_URL') . (str_ends_with(env('APP_URL'), '/') ? '' : '/') . $upload_path . $directory . '/' . $file_name);
+        return env('APP_URL') . (str_ends_with(env('APP_URL'), '/') ? '' : '/') . $upload_path . $directory . '/' . $file_name;
     }
 }

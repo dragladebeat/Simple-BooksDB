@@ -20,6 +20,7 @@ class Encryption
      */
     public function handle($request, Closure $next, $guard = null)
     {
+        // return $next($request);
         $secret = md5($request->bearerToken());
 
         if (!empty($request->all())) {
@@ -38,6 +39,7 @@ class Encryption
         // Log::info("Decrypted Request : " . json_encode($request->all()));
 
         $response = $next($request);
+
         // Log::info($response->getContent());
         if (!empty($response->getContent())) {
             $payload = $this->encrypt($response->getContent(), $secret, 'aes-256-gcm', 16);

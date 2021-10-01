@@ -90,11 +90,8 @@ class AuthorController extends Controller
                 'json' => $post_request
             ]);
 
-            if (!empty(json_decode($response->getBody())->payload)) {
-                $response_body = json_decode($encryption_helper->decrypt(json_decode($response->getBody())->payload));
-            } else {
-                $response_body = json_decode($response->getBody());
-            }
+            $response_body = json_decode($response->getBody());
+            $response_body = $encryption_helper->decrypt($response_body);
             switch ($response->getStatusCode()) {
                 case 200:
                     return redirect('/authors')->with('success', 'Author ' . $response_body->name . ' has been created');
@@ -193,11 +190,8 @@ class AuthorController extends Controller
                 'json' => $post_request
             ]);
 
-            if (!empty(json_decode($response->getBody())->payload)) {
-                $response_body = json_decode($encryption_helper->decrypt(json_decode($response->getBody())->payload));
-            } else {
-                $response_body = json_decode($response->getBody());
-            }
+            $response_body = json_decode($response->getBody());
+            $response_body = $encryption_helper->decrypt($response_body);
             switch ($response->getStatusCode()) {
                 case 200:
                     return redirect('/authors')->with('success', 'Author ' . $request->input('name') . ' has been updated');
@@ -232,11 +226,8 @@ class AuthorController extends Controller
             $response = $client->request('DELETE', 'authors' . '/' . $id);
 
             $encryption_helper = new EncryptionHelper(session('auth')->access_token);
-            if (!empty(json_decode($response->getBody())->payload)) {
-                $response_body = json_decode($encryption_helper->decrypt(json_decode($response->getBody())->payload));
-            } else {
-                $response_body = json_decode($response->getBody());
-            }
+            $response_body = json_decode($response->getBody());
+            $response_body = $encryption_helper->decrypt($response_body);
             switch ($response->getStatusCode()) {
                 case 200:
                     return redirect('/authors')->with('success', 'Author ' . $response_body->name . ' has been deleted');

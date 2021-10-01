@@ -166,7 +166,7 @@ class BookController extends Controller
         try {
             $response = $client->request('GET', 'authors');
 
-            $response_body = json_decode($response->getBody());;
+            $response_body = json_decode($response->getBody());
             switch ($response->getStatusCode()) {
                 case 200:
                     $data_response['authors'] = $response_body;
@@ -242,8 +242,8 @@ class BookController extends Controller
             ]);
 
             $response_body = json_decode($response->getBody());
-            $response_body = $encryption_helper->decrypt($response_body);
 
+            $response_body = $encryption_helper->decrypt($response_body);
 
             switch ($response->getStatusCode()) {
                 case 200:
@@ -256,6 +256,8 @@ class BookController extends Controller
                     return redirect()->back()->withInput($request->input())->withError($response->getStatusCode() . ': ' . $response_body->error->message);
             }
         } catch (Exception $e) {
+            echo $e->getMessage();
+            die();
             return redirect()->back()->withInput($request->input())->withError('500' . ': ' . $e->getMessage());
         }
     }

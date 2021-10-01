@@ -39,7 +39,7 @@ class EncryptionHelper
             return $data;
         }
 
-        $data = base64_decode($data);
+        $data = base64_decode($data->payload);
         $iv_len = openssl_cipher_iv_length($this->method);
         $iv = substr($data, 0, $iv_len);
         $cipher_text = substr($data, $iv_len, -$this->tag_length);
