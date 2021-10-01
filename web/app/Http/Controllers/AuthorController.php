@@ -24,7 +24,7 @@ class AuthorController extends Controller
 
         $data_response['data'] = array();
         try {
-            $response = $client->request('GET', env('API_URL') . 'authors');
+            $response = $client->request('GET', 'authors');
 
 
             $response_body = json_decode($response->getBody());
@@ -86,7 +86,7 @@ class AuthorController extends Controller
 
         $data_response['data'] = array();
         try {
-            $response = $client->request('POST', env('API_URL') . 'authors', [
+            $response = $client->request('POST', 'authors', [
                 'json' => $post_request
             ]);
 
@@ -141,7 +141,7 @@ class AuthorController extends Controller
         // Retrieve latest book data
         $data_response['author'] = array();
         try {
-            $response = $client->request('GET', env('API_URL') . 'authors' . '/' . $id);
+            $response = $client->request('GET', 'authors' . '/' . $id);
 
             $response_body = json_decode($response->getBody());
             switch ($response->getStatusCode()) {
@@ -189,7 +189,7 @@ class AuthorController extends Controller
 
         $data_response['data'] = array();
         try {
-            $response = $client->request('PUT', env('API_URL') . 'authors' . '/' . $id, [
+            $response = $client->request('PUT', 'authors' . '/' . $id, [
                 'json' => $post_request
             ]);
 
@@ -229,7 +229,7 @@ class AuthorController extends Controller
 
         $data_response['data'] = array();
         try {
-            $response = $client->request('DELETE', env('API_URL') . 'authors' . '/' . $id);
+            $response = $client->request('DELETE', 'authors' . '/' . $id);
 
             $encryption_helper = new EncryptionHelper(session('auth')->access_token);
             if (!empty(json_decode($response->getBody())->payload)) {

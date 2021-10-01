@@ -25,7 +25,7 @@ class BookController extends Controller
 
         $data_response['data'] = array();
         try {
-            $response = $client->request('GET', env('API_URL') . 'books');
+            $response = $client->request('GET', 'books');
 
             $response_body = json_decode($response->getBody());
             switch ($response->getStatusCode()) {
@@ -60,7 +60,7 @@ class BookController extends Controller
 
         $data_response['authors'] = array();
         try {
-            $response = $client->request('GET', env('API_URL') . 'authors');
+            $response = $client->request('GET', 'authors');
 
             $response_body = json_decode($response->getBody());
             switch ($response->getStatusCode()) {
@@ -110,7 +110,7 @@ class BookController extends Controller
 
         $data_response['data'] = array();
         try {
-            $response = $client->request('POST', env('API_URL') . 'books', [
+            $response = $client->request('POST', 'books', [
                 'json' => $post_request
             ]);
 
@@ -164,7 +164,7 @@ class BookController extends Controller
         // Retrieve authors data
         $data_response['authors'] = array();
         try {
-            $response = $client->request('GET', env('API_URL') . 'authors');
+            $response = $client->request('GET', 'authors');
 
             $response_body = json_decode($response->getBody());;
             switch ($response->getStatusCode()) {
@@ -184,7 +184,7 @@ class BookController extends Controller
         // Retrieve latest book data
         $data_response['book'] = array();
         try {
-            $response = $client->request('GET', env('API_URL') . 'books' . '/' . $id);
+            $response = $client->request('GET', 'books' . '/' . $id);
 
             $response_body = json_decode($response->getBody());
             switch ($response->getStatusCode()) {
@@ -237,7 +237,7 @@ class BookController extends Controller
 
         $data_response['data'] = array();
         try {
-            $response = $client->request('PUT', env('API_URL') . 'books' . '/' . $id, [
+            $response = $client->request('PUT', 'books' . '/' . $id, [
                 'json' => $post_request
             ]);
 
@@ -276,7 +276,7 @@ class BookController extends Controller
 
         $data_response['data'] = array();
         try {
-            $response = $client->request('DELETE', env('API_URL') . 'books' . '/' . $id);
+            $response = $client->request('DELETE', 'books' . '/' . $id);
 
             $encryption_helper = new EncryptionHelper(session('auth')->access_token);
             $response_body = json_decode($response->getBody());
