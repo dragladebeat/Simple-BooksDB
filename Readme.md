@@ -19,3 +19,17 @@ Persiapan Backend
 3. Buat model : {Book, Author, Favourite, BlacklistedToken} php artisan make:model Book -fmc
 4. Buat Routes CRUD
 5. Atur exception handler
+
+## Cara Pemakaian
+- Backend
+    - Copy .env.example ke .env
+    - Ubah konfigurasi database pada .env
+    - isi JWT_SECRET pada .env
+    - Ubah APP_URL sesuai IP / host yang dibutuhkan (Contoh : 192.168.0.101)
+    - Jalankan migration (**php artisan migrate**)
+    - Jalankan backend (**php artisan serve --host=192.168.0.101 --port=8000**)
+
+- CMS
+    - Copy .env.example ke .env
+    - Ubah API_URL sesuai backend (Contoh : 192.168.0.101/api/)
+    - Jalankan CMS (**php artisan serve --port=8080**)
