@@ -24,7 +24,10 @@ class BookController extends Controller
     public function index(Request $request)
     {
         if (!empty($request->bearerToken())) {
-            $user = $this->authHelper->getUser($request->bearerToken());
+            try {
+                $user = $this->authHelper->getUser($request->bearerToken());
+            } catch (Exception $ignore) {
+            }
         }
         $query = Book::with('author');
         $data = $query->get();
