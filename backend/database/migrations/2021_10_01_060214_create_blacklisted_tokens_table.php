@@ -17,7 +17,7 @@ class CreateBlacklistedTokensTable extends Migration
             $table->engine = 'InnoDB';
 
             $table->id();
-            $table->string('token', 255);
+            $table->text('token');
             $table->timestamps();
         });
     }

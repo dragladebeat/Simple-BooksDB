@@ -11,6 +11,7 @@ use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
 use Illuminate\Support\Facades\Hash;
 use stdClass;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class AuthHelper
 {
@@ -37,11 +38,14 @@ class AuthHelper
 
     public function decode($token)
     {
-        $decoded = JWT::decode($token, $this->secret, [$this->algorithm]);
-
-        $blacklisted = BlacklistedToken::where('token', $decoded->jti)->first();
-        if (!empty($blacklisted)) {
-            throw new ExpiredException('Unauthorized');
+        try {
+            $blacklisted = BlacklistedToken::where('token', $token)->first();
+            if (!empty($blacklisted)) {
+                throw new ExpiredException('Unauthorized', 401);
+            }
+            $decoded = JWT::decode($token, $this->secret, [$this->algorithm]);
+        } catch (Exception $e) {
+            throw new UnauthorizedHttpException('', 'Expired token');
         }
 
         return $decoded;
@@ -69,9 +73,8 @@ class AuthHelper
 
     public function logout($token)
     {
-        $decoded = $this->decode($token);
         $blacklistedToken = new BlacklistedToken();
-        $blacklistedToken->token = $decoded->jti;
+        $blacklistedToken->token = $token;
         $blacklistedToken->save();
     }
 
