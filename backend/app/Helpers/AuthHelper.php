@@ -91,7 +91,11 @@ class AuthHelper
 
     public function getUser($token)
     {
-        $decoded = $this->decode($token);
+        $decoded = null;
+        try {
+            $decoded = $this->decode($token);
+        } catch (Exception $e) {
+        }
 
         if (empty($decoded)) {
             return null;
