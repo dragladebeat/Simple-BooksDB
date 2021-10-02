@@ -8,6 +8,7 @@ use App\Models\User;
 use Closure;
 use Firebase\JWT\ExpiredException;
 use Illuminate\Contracts\Auth\Factory as Auth;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 class Authenticate
 {
@@ -22,6 +23,10 @@ class Authenticate
     public function handle($request, Closure $next, $guard = null)
     {
         $token = $request->bearerToken();
+
+        if(empty($token)) {
+            throw new UnauthorizedHttpException('', 'No Auth');
+        }
 
         $authHelper = new AuthHelper();
         try {
